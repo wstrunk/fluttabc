@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:intl/intl.dart';
 import 'library.dart';
 
 class ABCPage extends StatefulWidget {
@@ -15,12 +16,12 @@ class ABCPage extends StatefulWidget {
 }
 
 class _ABCPageState extends State<ABCPage> {
-  bool _alphabet = true;
+  bool _alphabet = false;
   String _text = '';
   List<String> _characters = Library.letters;
   List<String> _words = Library.words;
   Map<String, String> languageNames = Library.languageNames;
-
+  DateTime _currentDate;
   FlutterTts flutterTts;
   List<String> languages = List<String>();
   String language = 'de-DE';
@@ -28,6 +29,9 @@ class _ABCPageState extends State<ABCPage> {
   @override
   initState() {
     super.initState();
+    languages.add(language);
+    languages.add('en-US');
+    languages.add('pl-PL');
     initTts();
   }
 
@@ -39,7 +43,7 @@ class _ABCPageState extends State<ABCPage> {
     flutterTts.setPitch(1.0);
 
     if (Platform.isAndroid) {
-      flutterTts.ttsInitHandler(() {
+      flutterTts.setStartHandler((){ //ttsInitHandler(() {
         _getLanguages();
       });
     } else if (Platform.isIOS) {
@@ -104,6 +108,44 @@ class _ABCPageState extends State<ABCPage> {
         _words = Library.numbers;
       }
     });
+  }
+
+  Future<void> _showCalendarAndRead() async {
+    _read('Kalender');
+    DateTime selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2018),
+      lastDate: DateTime(2030),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: ThemeData.light(),
+          child: child,
+        );
+      },
+    );
+    var formatter = new DateFormat('dd.MM.yyyy');
+    String formatted = formatter.format(selectedDate);
+
+    _read(formatted);
+  }
+  Future<void> _showWatchAndRead() async {
+    _read('Uhrzeit');
+    TimeOfDay selectedTime24Hour = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (BuildContext context, Widget child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child,
+        );
+      },
+    );
+
+    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+    final String formattedTimeOfDay = localizations.formatTimeOfDay(selectedTime24Hour);
+    _read(formattedTimeOfDay);
+
   }
 
   void _appendLetter(String character) {
@@ -275,6 +317,28 @@ class _ABCPageState extends State<ABCPage> {
         Expanded(
           flex: 1,
           child: IconButton(
+            icon: Icon(Icons.calendar_today
+            ),
+            color: Colors.blueAccent,
+            splashColor: Colors.blue,
+            tooltip: 'Kalender',
+            onPressed: _showCalendarAndRead,
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: IconButton(
+            icon: Icon(Icons.watch
+            ),
+            color: Colors.blueAccent,
+            splashColor: Colors.blue,
+            tooltip: 'Uhrzeit',
+            onPressed: _showWatchAndRead,
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: IconButton(
             icon: Icon(Icons.undo),
             color: Colors.blueAccent,
             splashColor: Colors.blue,
@@ -315,32 +379,70 @@ class _ABCPageState extends State<ABCPage> {
   }
 
   Expanded lettersInput(BuildContext context) {
-    return Expanded(
-      child: GridView(
-        padding: const EdgeInsets.all(20.0),
-        gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount:
-                MediaQuery.of(context).orientation == Orientation.portrait
-                    ? 6
-                    : _alphabet ? 10 : 12),
-        children: <Widget>[
-          for (var letter in _characters)
-            FlatButton(
-              onPressed: () {
-                _appendLetter(letter);
-              },
-              child: Column(children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Text(
-                    letter,
-                    style: Theme.of(context).textTheme.display1,
+    if (_characters == Library.letters) {
+      return Expanded(
+        child: GridView(
+          padding: const EdgeInsets.all(20.0),
+          gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount:
+              MediaQuery
+                  .of(context)
+                  .orientation == Orientation.portrait
+                  ? 6
+                  : _alphabet ? 10 : 12),
+          children: <Widget>[
+            for (var letter in _characters)
+              FlatButton(
+                onPressed: () {
+                  _appendLetter(letter);
+                },
+                child: Column(children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Text(
+                      letter,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .display1,
+                    ),
                   ),
-                ),
-              ]),
-            ),
-        ],
-      ),
-    );
+                ]),
+              ),
+          ],
+        ),
+      );
+    }
+    else {
+      return Expanded(
+        child: GridView(
+          padding: const EdgeInsets.all(20.0),
+          gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount:
+              MediaQuery.of(context).orientation == Orientation.portrait
+                  ? 3
+                  : _alphabet ? 10 : 12),
+          children: <Widget>[
+            for (var letter in _characters)
+              FlatButton(
+                onPressed: () {
+                  _appendLetter(letter);
+                },
+                child: Column(children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Text(
+                      letter,
+                      style: Theme.of(context).textTheme.display3,
+                    ),
+                  ),
+                ]),
+              ),
+          ],
+        ),
+      );
+    }
   }
+
+
 }
