@@ -126,7 +126,7 @@ class _ABCPageState extends State<ABCPage> {
     );
     var formatter = new DateFormat('dd.MM.yyyy');
     String formatted = formatter.format(selectedDate);
-
+    _text = formatted;
     _read(formatted);
   }
   Future<void> _showWatchAndRead() async {
@@ -144,6 +144,7 @@ class _ABCPageState extends State<ABCPage> {
 
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     final String formattedTimeOfDay = localizations.formatTimeOfDay(selectedTime24Hour);
+    _text = formattedTimeOfDay;
     _read(formattedTimeOfDay);
 
   }
