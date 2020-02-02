@@ -26,18 +26,25 @@ class _ABCPageState extends State<ABCPage> {
   List<String> languages = List<String>();
   String language = 'de-DE';
 
+  final String language_de = 'de-DE';
+  final String language_en = 'en-US';
+  final String language_pl = 'pl-PL';
+  List<String> planned_languages = List<String>();
+
+
   @override
   initState() {
     super.initState();
-    languages.add(language);
-    languages.add('en-US');
-    languages.add('pl-PL');
+    planned_languages .add(language_de);
+    planned_languages .add(language_en);
+    planned_languages .add(language_pl);
+    language = language_de;
     initTts();
   }
 
   initTts() {
     flutterTts = FlutterTts();
-    flutterTts.setLanguage(language);
+    flutterTts.setLanguage(language_de);
     flutterTts.setSpeechRate(1.0);
     flutterTts.setVolume(1.0);
     flutterTts.setPitch(1.0);
@@ -55,7 +62,10 @@ class _ABCPageState extends State<ABCPage> {
     dynamic sysLanguages = await flutterTts.getLanguages;
     if (sysLanguages != null) {
       for (String lang in sysLanguages) {
-        languages.add(lang);
+        // check if already in, don't add again
+        if ( ! languages.contains(lang) && planned_languages.contains(lang)) {
+          languages.add(lang);
+        }
       }
       languages.sort();
       setState(() => languages);
