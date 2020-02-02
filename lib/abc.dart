@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:intl/intl.dart';
 import 'library.dart';
+import 'library.dart';
 
 class ABCPage extends StatefulWidget {
   ABCPage({Key key, this.title}) : super(key: key);
@@ -17,6 +18,7 @@ class ABCPage extends StatefulWidget {
 
 class _ABCPageState extends State<ABCPage> {
   bool _alphabet = false;
+  final double _iconSize = 50.0;
   String _text = '';
   List<String> _characters = Library.letters;
   List<String> _words = Library.words;
@@ -24,12 +26,12 @@ class _ABCPageState extends State<ABCPage> {
   DateTime _currentDate;
   FlutterTts flutterTts;
   List<String> languages = List<String>();
-  String language = 'de-DE';
 
   final String language_de = 'de-DE';
   final String language_en = 'en-US';
   final String language_pl = 'pl-PL';
   List<String> planned_languages = List<String>();
+  String language ;
 
 
   @override
@@ -39,6 +41,7 @@ class _ABCPageState extends State<ABCPage> {
     planned_languages .add(language_en);
     planned_languages .add(language_pl);
     language = language_de;
+    _characters = Library.digits;
     initTts();
   }
 
@@ -297,63 +300,91 @@ class _ABCPageState extends State<ABCPage> {
       children: <Widget>[
         Expanded(
           flex: 1,
-          child: IconButton(
-            icon: Icon(Icons.clear),
-            color: Colors.blueAccent,
+          child: FlatButton(
+            child: Column(
+              children: <Widget>[
+                Icon(Icons.clear, size: _iconSize, color: Colors.blueAccent),
+                Text('Von Vorne!')
+              ],
+            ),
+            padding: EdgeInsets.all(10.0),
             splashColor: Colors.blue,
-            tooltip: 'Von Vorne!',
+            //tooltip: 'Von Vorne!',
             onPressed: _clear,
           ),
         ),
         Expanded(
           flex: 1,
-          child: IconButton(
-            icon: Icon(Icons.loop),
-            color: Colors.blueAccent,
+          child: FlatButton(
+            child: Column(
+              children: <Widget>[
+                Icon(Icons.loop, size: _iconSize, color: Colors.blueAccent),
+                Text(_alphabet ? 'Zufällige Zahl' : 'Zufälliges Wort')
+              ],
+            ),
+            padding: EdgeInsets.all(10.0),
             splashColor: Colors.blue,
-            tooltip: _alphabet ? 'Zufällige Zahl' : 'Zufälliges Wort',
+            //tooltip: _alphabet ? 'Zufällige Zahl' : 'Zufälliges Wort',
             onPressed: _randomText,
           ),
         ),
         Expanded(
           flex: 1,
-          child: IconButton(
-            icon: _alphabet ? Icon(Icons.plus_one) : Icon(Icons.spellcheck),
-            color: Colors.blueAccent,
+          child: FlatButton(
+            child: Column(
+              children: <Widget>[
+                Icon(_alphabet ? Icons.plus_one : Icons.spellcheck, size: _iconSize, color: Colors.blueAccent),
+                Text(_alphabet ? 'Zahlen' : 'Buchstaben')
+              ],
+            ),
+            padding: EdgeInsets.all(10.0),
             splashColor: Colors.blue,
-            tooltip: _alphabet ? 'Zahlen' : 'Buchstaben',
+            //tooltip: _alphabet ? 'Zahlen' : 'Buchstaben',
             onPressed: _toggleAlphabet,
           ),
         ),
         Expanded(
           flex: 1,
-          child: IconButton(
-            icon: Icon(Icons.calendar_today
+          child: FlatButton(
+            child: Column(
+              children: <Widget>[
+                Icon(Icons.calendar_today, size: _iconSize, color: Colors.blueAccent),
+                Text('Kalender')
+              ],
             ),
-            color: Colors.blueAccent,
+            padding: EdgeInsets.all(10.0),
             splashColor: Colors.blue,
-            tooltip: 'Kalender',
+            //            tooltip: 'Kalender',,
             onPressed: _showCalendarAndRead,
           ),
         ),
         Expanded(
           flex: 1,
-          child: IconButton(
-            icon: Icon(Icons.watch
+          child: FlatButton(
+            child: Column(
+              children: <Widget>[
+                Icon(Icons.watch, size: _iconSize, color: Colors.blueAccent),
+                Text( 'Uhrzeit')
+              ],
             ),
-            color: Colors.blueAccent,
+            padding: EdgeInsets.all(10.0),
             splashColor: Colors.blue,
-            tooltip: 'Uhrzeit',
+            //            tooltip: 'Uhrzeit',,
             onPressed: _showWatchAndRead,
           ),
         ),
         Expanded(
           flex: 1,
-          child: IconButton(
-            icon: Icon(Icons.undo),
-            color: Colors.blueAccent,
+          child: FlatButton(
+            child: Column(
+              children: <Widget>[
+                Icon(Icons.backspace, size: _iconSize, color: Colors.blueAccent),
+                Text( 'löschen')
+              ],
+            ),
+            padding: EdgeInsets.all(10.0),
             splashColor: Colors.blue,
-            tooltip: 'Eins zurück!',
+            //            tooltip: 'Eins zurück!',,
             onPressed: _backspace,
           ),
         ),
@@ -444,7 +475,7 @@ class _ABCPageState extends State<ABCPage> {
                     padding: const EdgeInsets.all(1.0),
                     child: Text(
                       letter,
-                      style: Theme.of(context).textTheme.display3,
+                      style: Theme.of(context).textTheme.display2,
                     ),
                   ),
                 ]),
